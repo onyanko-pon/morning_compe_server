@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+    server:
+        container_name: morning_go_server
+        build:
+            context: .
+            dockerfile: ./Dockerfile
+        tty: true
+        ports:
+            - "8080:8080"
+            - "443:443"
+        volumes:
+            - ./src:/app/src
+        env_file:
+            - .env
+        environment:
+            - PORT=8080
+        # command: /bin/sh -c "go run main.go"
+        command: /bin/sh -c "realize start --run"
+        depends_on:
+            - db
+    db:
+        container_name: sagyo_db
+        build:
+            context: .
+            dockerfile: docker/db/Dockerfile
+        environment:
+            POSTGRES_USER: admin
+            POSTGRES_PASSWORD: password
+            TZ: 'Asia/Tokyo'
+        # command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+        volumes:
+            - pgsql-data:/var/lib/pgsql
+            - ./db/batch:/docker-entrypoint-initdb.d
+        ports:
+            - 5432:5432
+
+volumes:
+    pgsql-data:
+        driver: local
