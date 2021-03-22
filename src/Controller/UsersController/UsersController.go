@@ -28,8 +28,6 @@ func UpdateUser(c *gin.Context) {
 	interface_user, _ := c.Get("LoginUser")
 	user := interface_user.(Model.User)
 
-	// メールアドレスはここでは変更されない
-	user_binding_json.Email = user.Email
 
 	Model.BindUser(&user, user_binding_json)
 
